@@ -1,0 +1,57 @@
+// SAE S1.04 – Suppression du schéma
+// Dylan BUANIC Thomas LE GOFF b13
+
+// --- DROP DES CONSTRAINTES ---
+
+DROP CONSTRAINT tarif_kwh_fk_periode_conso;
+DROP CONSTRAINT tarif_kwh_fk_puissance;
+DROP CONSTRAINT tarif_kwh_fk_formule_tarifaire;
+
+DROP CONSTRAINT tarif_abonnement_fk_puissance;
+DROP CONSTRAINT tarif_abonnement_fk_formule_tarifaire;
+
+DROP CONSTRAINT comprend_fk_creneau;
+DROP CONSTRAINT comprend_fk_formule_tarifaire;
+
+DROP CONSTRAINT inclure_fk_periode_conso;
+DROP CONSTRAINT inclure_fk_formule_tarifaire;
+
+DROP CONSTRAINT creneau_fk_periode_conso;
+
+DROP CONSTRAINT releve_fk_creneau_quotidien;
+DROP CONSTRAINT releve_fk_date;
+DROP CONSTRAINT releve_fk_compteur;
+
+DROP CONSTRAINT souscrire_fk_formule_tarifaire;
+DROP CONSTRAINT souscrire_fk_contrat;
+
+DROP CONSTRAINT formule_tarifaire_fk_fournisseur;
+
+DROP CONSTRAINT contrat_fk_compteur;
+DROP CONSTRAINT contrat_fk_client;
+
+DROP CONSTRAINT posseder_fk_compteur;
+DROP CONSTRAINT posseder_fk_client;
+
+// --- DROP DES VARIABLES ---
+
+DROP VAR tarif_kwh;
+DROP VAR tarif_abonnement;
+DROP VAR comprend;
+DROP VAR inclure;
+DROP VAR releve;
+DROP VAR souscrire;
+DROP VAR posseder;
+
+DROP VAR creneau;
+DROP VAR periode_conso;
+DROP VAR puissance;
+DROP VAR creneau_quotidien;
+DROP VAR date;
+
+DROP VAR formule_tarifaire;
+DROP VAR fournisseur;
+
+DROP VAR contrat;
+DROP VAR compteur;
+DROP VAR client;

@@ -1,0 +1,158 @@
+// SAE S1.04 – Création du schéma
+//Dylan BUANIC Thomas LE GOFF B13
+
+// --- Créations des relations
+
+VAR client REAL RELATION {
+    id_client INT,
+    nom_cli CHAR,
+    prenom_cli CHAR,
+    adresse_cli1 CHAR,
+    adresse_cli2 CHAR,
+    adresse_cli3 CHAR,
+    code_postal_cli CHAR,
+    ville_cli CHAR,
+    telephone_cli CHAR,
+    mail_cli CHAR
+} KEY {id_client};
+
+VAR compteur REAL RELATION {
+    pdl_prm CHAR,
+    adresse1 CHAR,
+    adresse2 CHAR,
+    adresse3 CHAR,
+    code_postal CHAR,
+    ville CHAR,
+    date_hiver_ete INT,
+    date_ete_hiver INT
+} KEY {pdl_prm};
+
+VAR contrat REAL RELATION {
+    no_contrat CHAR,
+    date_debut_contrat INT,
+    id_client INT,
+    pdl_prm CHAR
+} KEY {no_contrat};
+
+VAR fournisseur REAL RELATION {
+    id_fournisseur CHAR,
+    libelle_fournisseur CHAR,
+    telephone_fournisseur CHAR,
+    mail_fournisseur CHAR
+} KEY {id_fournisseur};
+
+VAR formule_tarifaire REAL RELATION {
+    id_formule INT,
+    lib_formule CHAR,
+    descriptif_formule CHAR,
+    date_commercialisation INT,
+    id_fournisseur CHAR
+} KEY {id_formule};
+
+VAR date REAL RELATION {
+    date INT
+} KEY {date};
+
+VAR creneau_quotidien REAL RELATION {
+    heure INT
+} KEY {heure};
+
+VAR puissance REAL RELATION {
+    val_puissance INT
+} KEY {val_puissance};
+
+VAR periode_conso REAL RELATION {
+    id_periode_conso CHAR,
+    lib_periode_conso CHAR
+} KEY {id_periode_conso};
+
+VAR creneau REAL RELATION {
+    no_creneau_hebdo INT,
+    jour_hebdo CHAR,
+    heure_debut INT,
+    heure_fin INT,
+    id_periode_conso CHAR
+} KEY {no_creneau_hebdo};
+
+// ASSOCIATIONS 
+
+VAR posseder REAL RELATION {
+    id_client INT,
+    pdl_prm CHAR
+} KEY {id_client, pdl_prm};
+
+VAR souscrire REAL RELATION {
+    no_contrat CHAR,
+    id_formule INT
+} KEY {no_contrat};
+
+VAR releve REAL RELATION {
+    pdl_prm CHAR,
+    date INT,
+    heure INT,
+    conso_kwh RATIONAL
+} KEY {pdl_prm, date, heure};
+
+VAR inclure REAL RELATION {
+    id_formule INT,
+    id_periode_conso CHAR
+} KEY {id_formule, id_periode_conso};
+
+VAR comprend REAL RELATION {
+    id_formule INT,
+    no_creneau_hebdo INT
+} KEY {id_formule, no_creneau_hebdo};
+
+VAR tarif_abonnement REAL RELATION {
+    id_formule INT,
+    val_puissance INT,
+    prix_abo_ht RATIONAL,
+    prix_abo_ttc RATIONAL
+} KEY {id_formule, val_puissance};
+
+VAR tarif_kwh REAL RELATION {
+    id_formule INT,
+    val_puissance INT,
+    id_periode_conso CHAR,
+    prix_kwh_ht RATIONAL,
+    prix_kwh_ttc RATIONAL
+} KEY {id_formule, val_puissance, id_periode_conso};
+
+// CONTRAINTES
+
+CONSTRAINT posseder_fk_client posseder {id_client} <= client {id_client};
+CONSTRAINT posseder_fk_compteur posseder {pdl_prm} <= compteur {pdl_prm};
+
+CONSTRAINT contrat_fk_client contrat {id_client} <= client {id_client};
+CONSTRAINT contrat_fk_compteur contrat {pdl_prm} <= compteur {pdl_prm};
+
+CONSTRAINT formule_tarifaire_fk_fournisseur
+    formule_tarifaire {id_fournisseur} <= fournisseur {id_fournisseur};
+
+CONSTRAINT souscrire_fk_contrat souscrire {no_contrat} <= contrat {no_contrat};
+CONSTRAINT souscrire_fk_formule_tarifaire souscrire {id_formule} <= formule_tarifaire {id_formule};
+
+CONSTRAINT releve_fk_compteur releve {pdl_prm} <= compteur {pdl_prm};
+CONSTRAINT releve_fk_date releve {date} <= date {date};
+CONSTRAINT releve_fk_creneau_quotidien releve {heure} <= creneau_quotidien {heure};
+
+CONSTRAINT creneau_fk_periode_conso
+    creneau {id_periode_conso} <= periode_conso {id_periode_conso};
+
+CONSTRAINT inclure_fk_formule_tarifaire inclure {id_formule} <= formule_tarifaire {id_formule};
+CONSTRAINT inclure_fk_periode_conso inclure {id_periode_conso} <= periode_conso {id_periode_conso};
+
+CONSTRAINT comprend_fk_formule_tarifaire comprend {id_formule} <= formule_tarifaire {id_formule};
+CONSTRAINT comprend_fk_creneau comprend {no_creneau_hebdo} <= creneau {no_creneau_hebdo};
+
+CONSTRAINT tarif_abonnement_fk_formule_tarifaire
+    tarif_abonnement {id_formule} <= formule_tarifaire {id_formule};
+CONSTRAINT tarif_abonnement_fk_puissance
+    tarif_abonnement {val_puissance} <= puissance {val_puissance};
+
+CONSTRAINT tarif_kwh_fk_formule_tarifaire
+    tarif_kwh {id_formule} <= formule_tarifaire {id_formule};
+CONSTRAINT tarif_kwh_fk_puissance
+    tarif_kwh {val_puissance} <= puissance {val_puissance};
+CONSTRAINT tarif_kwh_fk_periode_conso
+    tarif_kwh {id_periode_conso} <= periode_conso {id_periode_conso};
